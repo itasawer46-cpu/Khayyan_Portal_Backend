@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 // Middlewares
 // Server.js mein purane app.use(cors()) ki jagah yeh lagayein:
 app.use(cors({
-    origin: 'http://khayyan-portal-backend.vercel.app', // Aapke frontend ka exact URL
+    origin: "https://khayyan-portal-frontend.vercel.app", // Aapke frontend ka exact URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
