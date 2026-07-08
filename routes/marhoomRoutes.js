@@ -20,6 +20,7 @@ const storage = new CloudinaryStorage({
   params: {
     folder: 'khayyan-portal-marhoomein',
     resource_type: 'image',
+    allowed_formats:['jpg','png','jpeg','jfif'],
   },
 });
 
@@ -40,6 +41,9 @@ router.post('/add', upload.single('image'), async (req, res) => {
     const savedMarhoom = await newMarhoom.save();
     res.status(201).json({ success: true, data: savedMarhoom });
   } catch (error) {
+    console.log("is ka masla ha is ko pakro"); 
+    console.error("Upload error:", error);
+     
     res.status(500).json({ success: false, message: error.message });
   }
 });
