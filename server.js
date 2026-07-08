@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(cors({
-    origin: "https://khayyan-portal-frontend.vercel.app", 
+    origin: ["https://khayyan-portal-frontend.vercel.app", "https://khayyan-portal-frontend-4g488bhh2-itasawer46-cpus.vercel.app"], 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
