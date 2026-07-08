@@ -29,8 +29,13 @@ const cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'audio',
 router.post('/add', cpUpload, async (req, res) => {
   try {
     const { type, title, date, details } = req.body;
-    let badgeClass = type === 'Vafat' ? 'bg-red-50 text-red-700 border-red-200' : (type === 'Soyem / Qul' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200');
+    
+    // Badge Class logic
+    let badgeClass = type === 'Vafat' ? 'bg-red-50 text-red-700 border-red-200' : 
+                     (type === 'Soyem / Qul' ? 'bg-amber-50 text-amber-700 border-amber-200' : 
+                     'bg-emerald-50 text-emerald-700 border-emerald-200');
 
+    // Optional Chaining (?.) used to prevent crash if req.files is undefined
     const newAnnouncement = new Announcement({
       type, title, date, details, badgeClass,
       image: req.files?.image ? req.files.image[0].path : "",
@@ -75,6 +80,7 @@ router.get('/all', async (req, res) => {
     const data = await Announcement.find().sort({ createdAt: -1 });
     res.json({ success: true, data });
   } catch (error) {
+    console.error("Fetch All Error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -85,6 +91,7 @@ router.delete('/delete/:id', async (req, res) => {
     await Announcement.findByIdAndDelete(req.params.id);
     res.json({ success: true, message: "Deleted successfully!" });
   } catch (error) {
+    console.error("Delete Error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
