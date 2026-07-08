@@ -1,4 +1,4 @@
-import mongoose, {Schema} from 'mongoose';
+import mongoose from 'mongoose';
 
 const marhoomSchema = new mongoose.Schema({
   name: {
@@ -27,5 +27,7 @@ const marhoomSchema = new mongoose.Schema({
   }
 }, { timestamps: true }); // Is se data add hone ka exact date aur time khud record ho jayega
 
-const Marhoom = mongoose.model('Marhoom', marhoomSchema);
+// 🔥 SERVERLESS FIX: Pehle check karein agar model bna hua hai, nahi toh naya banayein
+const Marhoom = mongoose.models.Marhoom || mongoose.model('Marhoom', marhoomSchema);
+
 export default Marhoom;

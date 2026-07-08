@@ -5,4 +5,7 @@ const statsSchema = new mongoose.Schema({
   shajraCount: { type: String, default: "50+" }
 }, { timestamps: true });
 
-export default mongoose.model('Stats', statsSchema);
+// 🔥 SERVERLESS FIX: Pehle check karein agar model bna hua hai, nahi toh naya banayein
+const Stats = mongoose.models.Stats || mongoose.model('Stats', statsSchema);
+
+export default Stats;

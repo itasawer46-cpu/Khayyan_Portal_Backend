@@ -15,5 +15,7 @@ const announcementSchema = new mongoose.Schema({
 // 🔥 DYNAMIC FIX: Built-in 'createdAt' field par 24 ghante (86400 seconds) ka TTL index
 announcementSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
 
-const Announcement = mongoose.model('Announcement', announcementSchema);
+// 🔥 SERVERLESS FIX: Pehle check karein agar model bna hua hai, nahi toh naya banayein
+const Announcement = mongoose.models.Announcement || mongoose.model('Announcement', announcementSchema);
+
 export default Announcement;
