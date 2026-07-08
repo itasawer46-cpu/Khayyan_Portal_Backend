@@ -33,13 +33,14 @@ router.post('/add', cpUpload, async (req, res) => {
 
     const newAnnouncement = new Announcement({
       type, title, date, details, badgeClass,
-      image: req.files.image ? req.files.image[0].path : "",
-      audio: req.files.audio ? req.files.audio[0].path : ""
+      image: req.files?.image ? req.files.image[0].path : "",
+      audio: req.files?.audio ? req.files.audio[0].path : ""
     });
 
     await newAnnouncement.save();
     res.json({ success: true, data: newAnnouncement });
   } catch (error) {
+    console.error("Add Error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -49,30 +50,43 @@ router.put('/update/:id', cpUpload, async (req, res) => {
   try {
     const { id } = req.params;
     const { type, title, date, details } = req.body;
+    
     const existing = await Announcement.findById(id);
+    if (!existing) return res.status(404).json({ success: false, message: "Announcement not found" });
     
     const updatedData = {
       type, title, date, details,
-      image: req.files.image ? req.files.image[0].path : (existing ? existing.image : ""),
-      audio: req.files.audio ? req.files.audio[0].path : (existing ? existing.audio : ""),
+      image: req.files?.image ? req.files.image[0].path : existing.image,
+      audio: req.files?.audio ? req.files.audio[0].path : existing.audio,
       badgeClass: type === 'Vafat' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'
     };
 
     const updated = await Announcement.findByIdAndUpdate(id, updatedData, { new: true });
     res.json({ success: true, data: updated });
   } catch (error) {
+    console.error("Update Error:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
+// GET: Get all
 router.get('/all', async (req, res) => {
-  const data = await Announcement.find().sort({ createdAt: -1 });
-  res.json({ success: true, data });
+  try {
+    const data = await Announcement.find().sort({ createdAt: -1 });
+    res.json({ success: true, data });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
+// DELETE: Delete
 router.delete('/delete/:id', async (req, res) => {
-  await Announcement.findByIdAndDelete(req.params.id);
-  res.json({ success: true, message: "Deleted!" });
+  try {
+    await Announcement.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: "Deleted successfully!" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 export default router;
