@@ -16,8 +16,7 @@ cloudinary.config({
 
 // Cloudinary Storage Setup
 // marhoomeinRoutes.js mein ye confirm karein
-const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
 
 // 'diskStorage' ki jagah memoryStorage use karein agar file upload error de raha hai
 const storage = new CloudinaryStorage({
