@@ -15,39 +15,52 @@ cloudinary.config({
 });
 
 // Cloudinary Storage Setup
+// marhoomeinRoutes.js mein ye confirm karein
+const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+// 'diskStorage' ki jagah memoryStorage use karein agar file upload error de raha hai
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'khayyan-portal-marhoomein',
-    resource_type: 'image',
-    allowed_formats:['jpg','png','jpeg','jfif'],
+    folder: 'khayyan_portal',
+    format: async (req, file) => 'jpg',
+    public_id: (req, file) => Date.now().toString(),
   },
 });
+
+const upload = multer({ storage: storage });
 
 const upload = multer({ storage: storage });
 
 // --- MARHOOMEIN ROUTES ---
 
 // 1. POST API: Cloudinary ke saath naya record
-router.post('/add', upload.single('image'), async (req, res) => {
+Router.post('/add', upload.single('image'), async (req, res) => {
   try {
     const { name, fatherName, wand, dateOfDemise, dayOfWeek } = req.body;
     
+    // Check karein ke file aayi hai ya nahi
+    const imagePath = req.file ? req.file.path : ""; 
+    
+    console.log("Saving data:", { name, fatherName, imagePath }); // Log check karne ke liye
+
     const newMarhoom = new Marhoom({
-      name, fatherName, wand, dateOfDemise, dayOfWeek,
-      imageName: req.file ? req.file.path : "" // Cloudinary ka URL save hoga
+      name, 
+      fatherName, 
+      wand, 
+      dateOfDemise, 
+      dayOfWeek,
+      imageName: imagePath 
     });
 
     const savedMarhoom = await newMarhoom.save();
     res.status(201).json({ success: true, data: savedMarhoom });
   } catch (error) {
-    console.log("is ka masla ha is ko pakro"); 
-    console.error("Upload error:", error);
-     
+    console.error("Upload error details:", error); // Yahan error ki asal wajah print hogi
     res.status(500).json({ success: false, message: error.message });
   }
 });
-
 // 2. GET API: All records
 router.get('/all', async (req, res) => {
   try {
