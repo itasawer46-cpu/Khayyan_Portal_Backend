@@ -30,12 +30,11 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
-const upload = multer({ storage: storage });
 
 // --- MARHOOMEIN ROUTES ---
 
 // 1. POST API: Cloudinary ke saath naya record
-Router.post('/add', upload.single('image'), async (req, res) => {
+router.post('/add', upload.single('image'), async (req, res) => {
   try {
     const { name, fatherName, wand, dateOfDemise, dayOfWeek } = req.body;
     
