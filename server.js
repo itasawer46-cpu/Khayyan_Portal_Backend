@@ -11,9 +11,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middlewares
+// Middlewares - CORS settings optimized for testing and Vercel production
 app.use(cors({
-    origin: ["https://khayyan-portal-frontend.vercel.app", "https://khayyan-portal-frontend-4g488bhh2-itasawer46-cpus.vercel.app"], 
+    origin: "*", // Testing ke liye temporary sab allowed kar diya taake CORS issue bilkul na aaye
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
@@ -23,14 +23,13 @@ app.use(express.json());
 app.use('/api/marhoomein', marhoomRoutes);
 app.use('/api/announcements', announcementRoutes);
 
-// 🔥 UPDATE: Local 'uploads' folder serve karne wala code yahan se hat gaya hai 
-// kyunke ab files Cloudinary se aa rahi hain.
-
-// MongoDB Connection Logic
+// MongoDB Connection Logic with Serverless Optimization
 const mongoURI = process.env.MONGO_URI || "";
 
 if (mongoURI) {
-  mongoose.connect(mongoURI)
+  mongoose.connect(mongoURI, {
+    bufferCommands: false, // 🔥 SERVERLESS TIMEOUTS SE BACHNE KE LIYE YEH SABSE ZAROORI HAI
+  })
     .then(() => console.log('🍃 MongoDB Database Connected Successfully!'))
     .catch((err) => console.error(`❌ Database Connection Error: ${err.message}`));
 } else {
