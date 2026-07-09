@@ -23,18 +23,15 @@ app.use(express.json());
 app.use('/api/marhoomein', marhoomRoutes);
 app.use('/api/announcements', announcementRoutes);
 
-// MongoDB Connection Logic with Serverless Optimization
-const mongoURI = process.env.MONGO_URI || "";
+// MongoDB Connection Logic with Hardcoded URI for Serverless Bypass
+// Vercel environment variables read nahi kar raha tha, isliye direct string laga di hai.
+const mongoURI = "mongodb+srv://husnaingill565758_db_user:KhayyanPass123@cluster0.sp6ysnv.mongodb.net/Khayyan_portal?appName=Cluster0";
 
-if (mongoURI) {
-  mongoose.connect(mongoURI, {
-    bufferCommands: false, // 🔥 SERVERLESS TIMEOUTS SE BACHNE KE LIYE YEH SABSE ZAROORI HAI
-  })
-    .then(() => console.log('🍃 MongoDB Database Connected Successfully!'))
-    .catch((err) => console.error(`❌ Database Connection Error: ${err.message}`));
-} else {
-  console.log('⚠️ Warning: MONGO_URI nahi mila.');
-}
+mongoose.connect(mongoURI, {
+  bufferCommands: false, // 🔥 SERVERLESS TIMEOUTS SE BACHNE KE LIYE YEH SABSE ZAROORI HAI
+})
+  .then(() => console.log('🍃 MongoDB Database Connected Successfully!'))
+  .catch((err) => console.error(`❌ Database Connection Error: ${err.message}`));
 
 // Base Testing Route
 app.get('/', (req, res) => {
